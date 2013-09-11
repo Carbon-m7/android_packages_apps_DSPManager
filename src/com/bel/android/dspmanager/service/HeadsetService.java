@@ -213,17 +213,17 @@ public class HeadsetService extends Service {
             final boolean prevUseHeadset = mUseHeadset;
             final boolean prevUseBluetooth = mUseBluetooth;
             final boolean prevUseUSB = mUseUSB;
-            final AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            final AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             if (action.equals(Intent.ACTION_HEADSET_PLUG)) {
                 mUseHeadset = intent.getIntExtra("state", 0) == 1;
             } else if (action.equals(BluetoothDevice.ACTION_ACL_CONNECTED)
                     || action.equals(BluetoothDevice.ACTION_ACL_DISCONNECTED)) {
-                mUseBluetooth = audioManager.isBluetoothA2dpOn();
+                mUseBluetooth = am.isBluetoothA2dpOn();
             } else if (action.equals(Intent.ACTION_ANALOG_AUDIO_DOCK_PLUG)) {
                 mUseUSB = intent.getIntExtra("state", 0) == 1;
             } else if (action.equals(AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {
-                mUseBluetooth = audioManager.isBluetoothA2dpOn();
-                mUseHeadset = audioManager.isWiredHeadsetOn();
+                mUseBluetooth = am.isBluetoothA2dpOn();
+                mUseHeadset = am.isWiredHeadsetOn();
             }
 
             Log.i(TAG, "Headset=" + mUseHeadset + "; Bluetooth=" + mUseBluetooth +

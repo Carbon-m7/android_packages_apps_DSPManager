@@ -285,18 +285,13 @@ public class HeadsetService extends Service {
      */
     protected synchronized void updateDsp() {
         final String mode = getAudioOutputRouting();
-        SharedPreferences preferences =
-                getSharedPreferences(DSPManager.SHARED_PREFERENCES_BASENAME + "." + mode, 0);
+        SharedPreferences preferences = getSharedPreferences(
+                DSPManager.SHARED_PREFERENCES_BASENAME + "." + mode, 0);
+
         Log.i(TAG, "Selected configuration: " + mode);
 
-        for (Integer sessionId : new ArrayList<Integer>(mAudioSessions.keySet())) {
-            try {
-                updateDsp(preferences, mAudioSessions.get(sessionId));
-            } catch (Exception e) {
-                Log.w(TAG, String.format(
-                        "Trouble trying to manage session %d, removing...", sessionId), e);
-                mAudioSessions.remove(sessionId);
-            }
+        for (Integer sessionId : mAudioSessions.keySet()) {
+            updateDsp(preferences, mAudioSessions.get(sessionId));
         }
     }
 
@@ -314,7 +309,7 @@ public class HeadsetService extends Service {
             session.mBassBoost.setEnabled(prefs.getBoolean("dsp.bass.enable", false));
             session.mBassBoost.setStrength(Short.valueOf(prefs.getString("dsp.bass.mode", "0")));
             session.mBassBoost.setCenterFrequency(
-                    Short.valueOf(preferences.getString("dsp.bass.freq", "55")));
+                    Short.valueOf(prefs.getString("dsp.bass.freq", "55")));
         } catch (Exception e) {
             Log.e(TAG, "Error enabling bass boost!", e);
         }
@@ -352,9 +347,9 @@ public class HeadsetService extends Service {
         }
 
         try {
-            session.mStereoWide.setEnabled(preferences.getBoolean("dsp.stereowide.enable", false));
+            session.mStereoWide.setEnabled(prefs.getBoolean("dsp.stereowide.enable", false));
             session.mStereoWide.setStrength(
-                    Short.valueOf(preferences.getString("dsp.stereowide.mode", "0")));
+                    Short.valueOf(prefs.getString("dsp.stereowide.mode", "0")));
         } catch (Exception e) {
             Log.e(TAG, "Error enabling widener!");
         }
